@@ -9,7 +9,7 @@
       condition: >
         event.labels.alertname == 'GpuErrorFiring'
       throttle:
-        once_per: node, 1h
+        once_within: 1 hour
         group_by_attributes:
           - event.labels.node
       actions:

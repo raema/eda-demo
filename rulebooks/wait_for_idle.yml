@@ -12,6 +12,7 @@
         - run_playbook:
             name: Idle probe
             playbook: check_idle.yml
+            inventory: localhost
           register: result
 
         - if:

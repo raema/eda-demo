@@ -9,10 +9,13 @@
       condition: fact.pending_reboot
 
       actions:
-        - run_playbook:
-            name: Idle probe
-            playbook: playbooks/check_idle.yml
-            inventory: localhost
+        - run_job_template:
+            name: Idle‑Probe
+            organization: Default
+            job_args:
+              extra_vars:
+                target_node: "{{ fact.node }}"
+                cluster_type: "{{ fact.cluster }}"
           register: result
 
         - if:

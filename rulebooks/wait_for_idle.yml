@@ -7,7 +7,8 @@
   rules:
     - name: Reboot when idle
       condition: >
-        fact.pending_reboot | default(false)
+        event.labels.alertname == 'GpuErrorFiring'
+        and coalesce(fact.pending_reboot, false) == false
       actions:
         - run_playbook:
             name: Idle probe

@@ -1,0 +1,21 @@
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: query queue length
+      vars:
+        node: "{{ fact.node }}"
+        cluster: "{{ fact.cluster }}"
+      shell: |
+        {% if cluster == 'k8s' %}
+        kubectl get pods --field-selector=spec.nodeName={{ node }} --no-headers | wc -l
+        {% else %}
+        squeue -h -w {{ node }} | wc -l
+        {% endif %}
+      register: q
+
+    - debug: msg="Node {{ node }} idle = {{ q.stdout|int == 0 }}"
+
+    # mark play as 'changed' only when idle
+    - set_fact:
+        _dummy: true
+      changed_when: "{{ q.stdout|int == 0 }}"

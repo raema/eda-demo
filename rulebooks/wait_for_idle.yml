@@ -6,9 +6,8 @@
         timeout: 900          # 15 minutes
   rules:
     - name: Reboot when idle
-      condition: >
-        event.labels.alertname == 'GpuErrorFiring'
-        and coalesce(fact.pending_reboot, false) == false
+      condition: fact.pending_reboot
+
       actions:
         - run_playbook:
             name: Idle probe

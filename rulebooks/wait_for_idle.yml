@@ -11,7 +11,7 @@
       actions:
         - run_playbook:
             name: Idle probe
-            playbook: check_idle.yml
+            playbook: playbooks/check_idle.yml
             inventory: localhost
           register: result
 

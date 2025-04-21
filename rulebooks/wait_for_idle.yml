@@ -1,0 +1,29 @@
+---
+- name: idle-checker
+  hosts: all
+  sources:
+    - ansible.eda.timer:
+        timeout: 900          # 15 minutes
+  rules:
+    - name: Reboot when idle
+      condition: >
+        fact.pending_reboot | default(false)
+      actions:
+        - run_playbook:
+            name: Idle probe
+            playbook: check_idle.yml
+          register: result
+
+        - if:
+            condition: result.changed
+            actions:
+              - run_job_template:
+                  name: GPU Remediation Workflow
+                  organization: Default
+                  job_args:
+                    extra_vars:
+                      target_node: "{{ fact.node }}"
+                      cluster_type: "{{ fact.cluster }}"
+              - retract_fact:
+                  fact:
+                    pending_reboot: true

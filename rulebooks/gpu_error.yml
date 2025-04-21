@@ -1,0 +1,25 @@
+---
+- name: gpu-error-handler
+  hosts: all
+  sources:
+    - ansible.eda.alertmanager:
+        port: 5000 # trigger with Alertmanager webhook
+  rules:
+    - name: Drain node and flag
+      condition: >
+        event.labels.alertname == 'GpuErrorFiring'
+      throttle:
+        once_per: node, 1h
+      actions:
+        - run_job_template:
+            name: Drain Node
+            organization: Default
+            job_args:
+              extra_vars:
+                target_node: "{{ event.labels.node }}"
+                cluster_type: "{{ event.labels.cluster | default('slurm') }}"
+        - set_fact:
+            fact:
+              pending_reboot: true
+              node: "{{ event.labels.node }}"
+              cluster: "{{ event.labels.cluster | default('slurm') }}"

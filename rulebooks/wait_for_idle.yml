@@ -2,7 +2,7 @@
 - name: idle-checker
   hosts: all
   sources:
-    - ansible.eda.timer:
+    - ansible.eda.tick:
         timeout: 900          # 15 minutes
   rules:
     - name: Reboot when idle

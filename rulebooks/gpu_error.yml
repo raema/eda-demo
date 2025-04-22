@@ -1,27 +1,38 @@
 ---
 - name: gpu-error-handler
   hosts: all
+
   sources:
+    # Alertmanager webhook listener
     - ansible.eda.alertmanager:
-        port: 5000 # trigger with Alertmanager webhook
+        port: 5000            # service port exposed by the activation
+
   rules:
+
     - name: Drain node and flag
-      condition: >
-        event.labels.alertname == 'GpuErrorFiring'
+      # match the alert that indicates a GPU error
+      # NOTE the path: event.alert.labels.alertname
+      condition: event.alert.labels.alertname == 'GpuErrorFiring'
+
+      # suppress repeated drains for the same node for 1 hour
       throttle:
         once_within: 1 hour
         group_by_attributes:
-          - event.labels.node
+          - event.alert.labels.node
+
       actions:
+        # 1) launch the Drain Node job in AWX
         - run_job_template:
             name: Drain Node
             organization: Default
             job_args:
               extra_vars:
-                target_node: "{{ event.labels.node }}"
-                cluster_type: "{{ event.labels.cluster | default('slurm') }}"
+                target_node: "{{ event.alert.labels.node }}"
+                cluster_type: "{{ event.alert.labels.cluster | default('slurm') }}"
+
+        # 2) set a fact so the idle‑checker activation knows this node
         - set_fact:
             fact:
               pending_reboot: true
-              node: "{{ event.labels.node }}"
-              cluster: "{{ event.labels.cluster | default('slurm') }}"
+              node: "{{ event.alert.labels.node }}"
+              cluster: "{{ event.alert.labels.cluster | default('slurm') }}"

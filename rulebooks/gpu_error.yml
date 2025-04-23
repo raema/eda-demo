@@ -25,7 +25,7 @@
             organization: Default
             job_args:
               extra_vars:
-                node: "{{ event.alert.labels.node }}"
+                target_node: "{{ event.alert.labels.node }}"
 
         # 2) set a fact so the idle‑checker activation knows this node
         - set_fact:

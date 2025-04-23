@@ -15,7 +15,7 @@
             job_args:
               extra_vars:
                 target_node: "{{ fact.node }}"
-                cluster_type: "{{ fact.cluster }}"
+                target_cluster: "{{ fact.cluster }}"
           register: result
 
         - if:
@@ -27,7 +27,7 @@
                   job_args:
                     extra_vars:
                       target_node: "{{ fact.node }}"
-                      cluster_type: "{{ fact.cluster }}"
+                      target_cluster: "{{ fact.cluster }}"
               - retract_fact:
                   fact:
                     pending_reboot: true

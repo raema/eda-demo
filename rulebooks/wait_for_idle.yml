@@ -14,7 +14,7 @@
             organization: Default
             job_args:
               extra_vars:
-                node: "{{ fact.node }}"
+                target_node: "{{ fact.node }}"
           register: result
 
         - if:
@@ -25,7 +25,7 @@
                   organization: Default
                   job_args:
                     extra_vars:
-                      node: "{{ fact.node }}"
+                      target_node: "{{ fact.node }}"
               - retract_fact:
                   fact:
                     pending_reboot: true

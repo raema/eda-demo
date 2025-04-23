@@ -10,8 +10,6 @@
   rules:
 
     - name: Drain node and flag
-      # match the alert that indicates a GPU error
-      # NOTE the path: event.alert.labels.alertname
       condition: event.alert.labels.alertname == 'GpuErrorFiring'
 
       # suppress repeated drains for the same node for 1 hour
@@ -28,12 +26,9 @@
             job_args:
               extra_vars:
                 node: "{{ event.alert.labels.node }}"
-                cluster: "{{ event.alert.labels.cluster }}"
 
         # 2) set a fact so the idle‑checker activation knows this node
         - set_fact:
             fact:
               pending_reboot: true
               node: "{{ event.alert.labels.node }}"
-              cluster: "{{ event.alert.labels.cluster }}"
-

@@ -28,11 +28,12 @@
             job_args:
               extra_vars:
                 target_node: "{{ event.alert.labels.node }}"
-                cluster_type: "{{ event.alert.labels.cluster | default('slurm') }}"
+                target_cluster: "{{ event.alert.labels.cluster }}"
 
         # 2) set a fact so the idle‑checker activation knows this node
         - set_fact:
             fact:
               pending_reboot: true
-              node: "{{ event.alert.labels.node }}"
-              cluster: "{{ event.alert.labels.cluster | default('slurm') }}"
+              target_node: "{{ event.alert.labels.node }}"
+              target_cluster: "{{ event.alert.labels.cluster }}"
+

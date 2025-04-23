@@ -14,8 +14,8 @@
             organization: Default
             job_args:
               extra_vars:
-                target_node: "{{ fact.node }}"
-                target_cluster: "{{ fact.cluster }}"
+                node: "{{ fact.node }}"
+                cluster: "{{ fact.cluster }}"
           register: result
 
         - if:
@@ -26,8 +26,8 @@
                   organization: Default
                   job_args:
                     extra_vars:
-                      target_node: "{{ fact.node }}"
-                      target_cluster: "{{ fact.cluster }}"
+                      node: "{{ fact.node }}"
+                      cluster: "{{ fact.cluster }}"
               - retract_fact:
                   fact:
                     pending_reboot: true

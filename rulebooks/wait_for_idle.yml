@@ -10,22 +10,22 @@
 
       actions:
         - run_job_template:
-            name: Idle‑Probe
+            name: Idle Probe
             organization: Default
             job_args:
               extra_vars:
-                node: "{{ fact.node }}"
+                target_node: "{{ fact.node }}"
           register: result
 
         - if:
             condition: result.changed
             actions:
               - run_job_template:
-                  name: GPU Remediation Workflow
+                  name: Reboot Node
                   organization: Default
                   job_args:
                     extra_vars:
-                      node: "{{ fact.node }}"
+                      target_node: "{{ fact.node }}"
               - retract_fact:
                   fact:
                     pending_reboot: true
